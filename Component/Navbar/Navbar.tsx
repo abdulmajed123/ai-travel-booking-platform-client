@@ -59,12 +59,12 @@ const Navbar = () => {
 
         {/* Right Side */}
         <div className="hidden md:flex items-center gap-4">
-          <Link
+          {/* <Link
             href="/login"
             className="px-4 py-1 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             Login
-          </Link>
+          </Link> */}
 
           {/* Profile */}
           <div className="relative">
@@ -87,9 +87,12 @@ const Navbar = () => {
                 >
                   Profile
                 </Link>
-                <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                  Logout
-                </button>
+                <Link
+                  href={"/login"}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  Login
+                </Link>
               </div>
             )}
           </div>
