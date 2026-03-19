@@ -68,7 +68,7 @@ const ItemCard = ({ item }: { item: Item }) => {
         </div>
 
         {/* Button */}
-        <Link href={`/tours/${item._id}`} className="mt-auto">
+        <Link href={`/explore/${item._id}`} className="mt-auto">
           <button className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition">
             View Details
           </button>
