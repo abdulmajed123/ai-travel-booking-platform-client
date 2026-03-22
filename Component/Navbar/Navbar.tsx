@@ -1,261 +1,94 @@
 // "use client";
 
 // import Link from "next/link";
-// import { useState } from "react";
-
-// const Navbar = () => {
-//   const [menuOpen, setMenuOpen] = useState(false);
-//   const [profileOpen, setProfileOpen] = useState(false);
-
-//   return (
-//     <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-md">
-//       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-//         {/* Logo */}
-//         <Link href="/" className="text-xl font-bold text-blue-600">
-//           TravelAI
-//         </Link>
-
-//         {/* Desktop Menu */}
-//         <div className="hidden md:flex items-center gap-6">
-//           <Link href="/" className="hover:text-blue-500">
-//             Home
-//           </Link>
-//           <Link href="/explore" className="hover:text-blue-500">
-//             Explore
-//           </Link>
-
-//           {/* Dropdown */}
-//           <div className="relative group">
-//             <button className="hover:text-blue-500">Services ▾</button>
-//             <div className="absolute hidden group-hover:block bg-white dark:bg-gray-800 shadow-md mt-2 rounded-md w-40">
-//               <Link
-//                 href="/flights"
-//                 className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-//               >
-//                 Flights
-//               </Link>
-//               <Link
-//                 href="/hotels"
-//                 className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-//               >
-//                 Hotels
-//               </Link>
-//               <Link
-//                 href="/tours"
-//                 className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-//               >
-//                 Tours
-//               </Link>
-//             </div>
-//           </div>
-
-//           <Link href="/about" className="hover:text-blue-500">
-//             About
-//           </Link>
-//           <Link href="/contact" className="hover:text-blue-500">
-//             Contact
-//           </Link>
-//         </div>
-
-//         {/* Right Side */}
-//         <div className="hidden md:flex items-center gap-4">
-//           {/* <Link
-//             href="/login"
-//             className="px-4 py-1 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
-//           >
-//             Login
-//           </Link> */}
-
-//           {/* Profile */}
-//           <div className="relative">
-//             <button
-//               onClick={() => setProfileOpen(!profileOpen)}
-//               className="w-8 h-8 rounded-full bg-gray-300"
-//             ></button>
-
-//             {profileOpen && (
-//               <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 shadow-md rounded-md">
-//                 <Link
-//                   href="/dashboard"
-//                   className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-//                 >
-//                   Dashboard
-//                 </Link>
-//                 <Link
-//                   href="/profile"
-//                   className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-//                 >
-//                   Profile
-//                 </Link>
-//                 <Link
-//                   href={"/login"}
-//                   className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-//                 >
-//                   Login
-//                 </Link>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-
-//         {/* Mobile Button */}
-//         <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-//           ☰
-//         </button>
-//       </div>
-
-//       {/* Mobile Menu */}
-//       {menuOpen && (
-//         <div className="md:hidden px-4 pb-4 space-y-2 bg-white dark:bg-gray-900">
-//           <Link href="/" className="block">
-//             Home
-//           </Link>
-//           <Link href="/explore" className="block">
-//             Explore
-//           </Link>
-//           <Link href="/about" className="block">
-//             About
-//           </Link>
-//           <Link href="/contact" className="block">
-//             Contact
-//           </Link>
-//           <Link href="/login" className="block">
-//             Login
-//           </Link>
-//         </div>
-//       )}
-//     </nav>
-//   );
-// };
-
-// export default Navbar;
-
-// "use client";
-
-// import Link from "next/link";
 // import { usePathname } from "next/navigation";
 // import { useState } from "react";
-// import { AiOutlineMenu, AiOutlineClose, AiOutlineUser } from "react-icons/ai";
+// import AuthButton from "../Button/AuthButton";
 
 // const Navbar = () => {
 //   const [menuOpen, setMenuOpen] = useState(false);
 //   const [profileOpen, setProfileOpen] = useState(false);
-//   const pathname = usePathname(); // বর্তমান পাথ জানার জন্য
+//   const pathname = usePathname();
 
-//   // নেভবার লিংকগুলো (সহজেই ম্যানেজ করার জন্য)
-//   const navLinks = [
-//     { name: "Home", href: "/" },
-//     { name: "Explore", href: "/explore" },
-//     { name: "About", href: "/about" },
-//     { name: "Contact", href: "/contact" },
-//   ];
-
-//   // একটিভ লিংক স্টাইল করার ফাংশন
-//   const isActive = (path: string) => pathname === path;
+//   const isActive = (href: string) => pathname === href;
 
 //   return (
-//     <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800">
+//     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md dark:bg-gray-900 shadow">
 //       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-//         {/* Logo */}
-//         <Link
-//           href="/"
-//           className="text-2xl font-black text-blue-600 italic tracking-tighter"
-//         >
-//           Trvl
-//           <span className="text-gray-900 dark:text-white font-bold">AI</span>
+//         {/* ✈️ Logo */}
+//         <Link href="/" className="flex items-center gap-2">
+//           <span className="text-2xl">✈️</span>
+//           <span className="text-xl font-bold text-blue-600">TravelAI</span>
 //         </Link>
 
 //         {/* Desktop Menu */}
 //         <div className="hidden md:flex items-center gap-8">
-//           {navLinks.map((link) => (
+//           {[
+//             { path: "/", name: "Home" },
+//             { path: "/explore", name: "Explore" },
+//             { path: "/about", name: "About" },
+//             { path: "/contact", name: "Contact" },
+//           ].map((item, i) => (
 //             <Link
-//               key={link.href}
-//               href={link.href}
-//               className={`text-sm font-semibold transition-colors hover:text-blue-600 ${
-//                 isActive(link.href)
+//               key={i}
+//               href={item.path}
+//               className={`relative font-medium transition-all duration-200 ${
+//                 isActive(item.path)
 //                   ? "text-blue-600"
-//                   : "text-gray-600 dark:text-gray-300"
+//                   : "text-gray-700 dark:text-gray-300 hover:text-blue-500"
 //               }`}
 //             >
-//               {link.name}
+//               {item.name}
+
+//               {/* active underline */}
+//               {isActive(item.path) && (
+//                 <span className="absolute left-0 -bottom-1 w-full h-[2px] bg-blue-600 rounded"></span>
+//               )}
 //             </Link>
 //           ))}
-
-//           {/* Advanced Dropdown Menu (Services) */}
-//           <div className="relative group cursor-pointer">
-//             <button
-//               className={`text-sm font-semibold flex items-center gap-1 hover:text-blue-600 ${
-//                 pathname.includes("/services")
-//                   ? "text-blue-600"
-//                   : "text-gray-600 dark:text-gray-300"
-//               }`}
-//             >
-//               Services <span className="text-[10px]">▼</span>
-//             </button>
-//             <div className="absolute hidden group-hover:block bg-white dark:bg-gray-800 shadow-xl mt-0 pt-4 rounded-xl w-48 border border-gray-100 dark:border-gray-700 animate-in fade-in slide-in-from-top-2">
-//               <Link
-//                 href="/flights"
-//                 className="block px-5 py-3 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 transition-all"
-//               >
-//                 Flights
-//               </Link>
-//               <Link
-//                 href="/hotels"
-//                 className="block px-5 py-3 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 transition-all"
-//               >
-//                 Hotels
-//               </Link>
-//               <Link
-//                 href="/tours"
-//                 className="block px-5 py-3 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 transition-all rounded-b-xl"
-//               >
-//                 Tour Packages
-//               </Link>
-//             </div>
-//           </div>
 //         </div>
 
-//         {/* Right Side (Profile & Theme) */}
-//         <div className="hidden md:flex items-center gap-5">
+//         {/* Right Side */}
+//         <div className="hidden md:flex items-center gap-4">
+//           {/* 🔵 Login Button */}
+//           <Link
+//             href="/login"
+//             className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-all shadow-md"
+//           >
+//             Login
+//           </Link>
+
+//           {/* 👤 Profile */}
 //           <div className="relative">
 //             <button
 //               onClick={() => setProfileOpen(!profileOpen)}
-//               className="flex items-center gap-2 p-1 pr-3 border border-gray-200 dark:border-gray-700 rounded-full hover:shadow-md transition-all"
+//               className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 text-white flex items-center justify-center font-bold shadow-md"
 //             >
-//               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-//                 <AiOutlineUser size={20} />
-//               </div>
-//               <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
-//                 Account
-//               </span>
+//               U
 //             </button>
 
+//             {/* Dropdown */}
 //             {profileOpen && (
-//               <div className="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 shadow-2xl rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50">
-//                 <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-//                   <p className="text-xs text-gray-500">Welcome back!</p>
-//                   <p className="text-sm font-bold text-gray-900 dark:text-white">
-//                     Guest User
-//                   </p>
-//                 </div>
+//               <div className="absolute right-0 mt-3 w-44 bg-white dark:bg-gray-800 shadow-xl rounded-xl overflow-hidden border animate-fadeIn">
 //                 <Link
 //                   href="/dashboard"
-//                   className="block px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors"
+//                   className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${
+//                     isActive("/dashboard") ? "bg-gray-100 dark:bg-gray-700" : ""
+//                   }`}
 //                 >
 //                   Dashboard
 //                 </Link>
+
 //                 <Link
 //                   href="/profile"
-//                   className="block px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors"
+//                   className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${
+//                     isActive("/profile") ? "bg-gray-100 dark:bg-gray-700" : ""
+//                   }`}
 //                 >
-//                   My Profile
+//                   Profile
 //                 </Link>
-//                 <Link
-//                   href="/login"
-//                   className="block px-4 py-3 text-sm font-bold text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700"
-//                 >
-//                   Login / Signup
-//                 </Link>
+
+//                 <AuthButton></AuthButton>
 //               </div>
 //             )}
 //           </div>
@@ -263,37 +96,43 @@
 
 //         {/* Mobile Button */}
 //         <button
-//           className="md:hidden text-gray-700 dark:text-white"
+//           className="md:hidden text-2xl"
 //           onClick={() => setMenuOpen(!menuOpen)}
 //         >
-//           {menuOpen ? (
-//             <AiOutlineClose size={24} />
-//           ) : (
-//             <AiOutlineMenu size={24} />
-//           )}
+//           ☰
 //         </button>
 //       </div>
 
 //       {/* Mobile Menu */}
 //       {menuOpen && (
-//         <div className="md:hidden p-4 space-y-3 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 animate-in slide-in-from-right">
-//           {navLinks.map((link) => (
+//         <div className="md:hidden px-4 pb-4 space-y-3 bg-white dark:bg-gray-900 shadow-inner">
+//           {[
+//             { path: "/", name: "Home" },
+//             { path: "/explore", name: "Explore" },
+//             { path: "/about", name: "About" },
+//             { path: "/contact", name: "Contact" },
+//           ].map((item, i) => (
 //             <Link
-//               key={link.href}
-//               href={link.href}
-//               onClick={() => setMenuOpen(false)}
-//               className={`block py-2 font-medium ${isActive(link.href) ? "text-blue-600" : "text-gray-600 dark:text-gray-300"}`}
+//               key={i}
+//               href={item.path}
+//               className={`block font-medium ${
+//                 isActive(item.path)
+//                   ? "text-blue-600"
+//                   : "text-gray-700 dark:text-gray-300"
+//               }`}
 //             >
-//               {link.name}
+//               {item.name}
 //             </Link>
 //           ))}
-//           <Link
-//             href="/login"
-//             onClick={() => setMenuOpen(false)}
-//             className="block py-3 px-4 bg-blue-600 text-white rounded-xl text-center font-bold"
-//           >
-//             Login
-//           </Link>
+
+//           <div className="pt-3 border-t">
+//             <Link
+//               href="/login"
+//               className="block text-center bg-blue-600 text-white py-2 rounded-lg font-semibold"
+//             >
+//               Login
+//             </Link>
+//           </div>
 //         </div>
 //       )}
 //     </nav>
@@ -307,138 +146,169 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import AuthButton from "../Button/AuthButton";
+import { useAuth } from "@/hooks/useAuth"; // Hook ta eikhane import korlam
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const pathname = usePathname(); // ✅ current path
+  const pathname = usePathname();
+  const { isLoggedIn, loading } = useAuth(); // Auth status check korar jonno
 
   const isActive = (href: string) => pathname === href;
 
   return (
-    <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-md">
+    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-800 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="text-xl font-bold text-blue-600">
-          TravelAI
+        {/* ✈️ Logo */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <span className="text-2xl transition-transform group-hover:rotate-12">
+            ✈️
+          </span>
+          <span className="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            TravelAI
+          </span>
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-6">
-          <Link
-            href="/"
-            className={`hover:text-blue-500 ${
-              isActive("/") ? "text-blue-600 font-semibold" : ""
-            }`}
-          >
-            Home
-          </Link>
-          <Link
-            href="/explore"
-            className={`hover:text-blue-500 ${
-              isActive("/explore") ? "text-blue-600 font-semibold" : ""
-            }`}
-          >
-            Explore
-          </Link>
-
-          <Link
-            href="/about"
-            className={`hover:text-blue-500 ${
-              isActive("/about") ? "text-blue-600 font-semibold" : ""
-            }`}
-          >
-            About
-          </Link>
-          <Link
-            href="/contact"
-            className={`hover:text-blue-500 ${
-              isActive("/contact") ? "text-blue-600 font-semibold" : ""
-            }`}
-          >
-            Contact
-          </Link>
+        <div className="hidden md:flex items-center gap-8">
+          {[
+            { path: "/", name: "Home" },
+            { path: "/explore", name: "Explore" },
+            { path: "/about", name: "About" },
+            { path: "/contact", name: "Contact" },
+          ].map((item, i) => (
+            <Link
+              key={i}
+              href={item.path}
+              className={`relative text-sm font-medium transition-colors duration-200 ${
+                isActive(item.path)
+                  ? "text-blue-600"
+                  : "text-gray-600 dark:text-gray-300 hover:text-blue-500"
+              }`}
+            >
+              {item.name}
+              {isActive(item.path) && (
+                <span className="absolute left-0 -bottom-1 w-full h-[2px] bg-blue-600 rounded-full"></span>
+              )}
+            </Link>
+          ))}
         </div>
 
-        {/* Right Side */}
-        <div className="hidden md:flex items-center gap-4">
-          {/* Profile */}
-          <div className="relative">
-            <button
-              onClick={() => setProfileOpen(!profileOpen)}
-              className="w-8 h-8 rounded-full bg-gray-300"
-            ></button>
+        {/* Right Side - Auth Section */}
+        <div className="flex items-center gap-4">
+          {!loading && (
+            <>
+              {isLoggedIn ? (
+                /* 👤 User Profile Dropdown (Only if Logged In) */
+                <div className="relative">
+                  <button
+                    onClick={() => setProfileOpen(!profileOpen)}
+                    className="w-10 h-10 rounded-full border-2 border-blue-100 dark:border-gray-700 bg-gradient-to-tr from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold shadow-md hover:scale-105 transition-all"
+                  >
+                    U
+                  </button>
 
-            {profileOpen && (
-              <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 shadow-md rounded-md">
-                <Link
-                  href="/dashboard"
-                  className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    isActive("/dashboard") ? "bg-gray-100 dark:bg-gray-700" : ""
-                  }`}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/profile"
-                  className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    isActive("/profile") ? "bg-gray-100 dark:bg-gray-700" : ""
-                  }`}
-                >
-                  Profile
-                </Link>
+                  {/* Dropdown Menu */}
+                  {profileOpen && (
+                    <div className="absolute right-0 mt-3 w-52 bg-white dark:bg-gray-800 shadow-xl rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 animate-in fade-in zoom-in duration-200">
+                      {/* User Info Section */}
+                      <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
+                        <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">
+                          Account
+                        </p>
+                        <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
+                          Traveler User
+                        </p>
+                      </div>
+
+                      {/* Menu Items */}
+                      <div className="py-1">
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setProfileOpen(false)}
+                          className={`flex items-center px-4 py-2.5 text-sm transition-colors ${
+                            isActive("/dashboard")
+                              ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20"
+                              : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                          }`}
+                        >
+                          Dashboard
+                        </Link>
+
+                        <Link
+                          href="/profile"
+                          onClick={() => setProfileOpen(false)}
+                          className={`flex items-center px-4 py-2.5 text-sm transition-colors ${
+                            isActive("/profile")
+                              ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20"
+                              : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                          }`}
+                        >
+                          My Profile
+                        </Link>
+                      </div>
+
+                      {/* Action Section */}
+                      <div className="border-t border-gray-100 dark:border-gray-700 bg-gray-50/30">
+                        <AuthButton />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                /* 🔵 Login Button (Only if Not Logged In) */
                 <Link
                   href="/login"
-                  className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    isActive("/login") ? "bg-gray-100 dark:bg-gray-700" : ""
-                  }`}
+                  className="hidden md:inline-block px-6 py-2 rounded-full bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 hover:shadow-lg transition-all active:scale-95"
                 >
                   Login
                 </Link>
-              </div>
-            )}
-          </div>
-        </div>
+              )}
+            </>
+          )}
 
-        {/* Mobile Button */}
-        <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-          ☰
-        </button>
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? "✕" : "☰"}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu (Drawer style) */}
       {menuOpen && (
-        <div className="md:hidden px-4 pb-4 space-y-2 bg-white dark:bg-gray-900">
-          <Link
-            href="/"
-            className={`${isActive("/") ? "text-blue-600 font-semibold" : ""} block`}
-          >
-            Home
-          </Link>
-          <Link
-            href="/explore"
-            className={`${isActive("/explore") ? "text-blue-600 font-semibold" : ""} block`}
-          >
-            Explore
-          </Link>
-          <Link
-            href="/about"
-            className={`${isActive("/about") ? "text-blue-600 font-semibold" : ""} block`}
-          >
-            About
-          </Link>
-          <Link
-            href="/contact"
-            className={`${isActive("/contact") ? "text-blue-600 font-semibold" : ""} block`}
-          >
-            Contact
-          </Link>
-          <Link
-            href="/login"
-            className={`${isActive("/login") ? "text-blue-600 font-semibold" : ""} block`}
-          >
-            Login
-          </Link>
+        <div className="md:hidden px-4 pb-6 pt-2 space-y-4 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 shadow-inner">
+          {[
+            { path: "/", name: "Home" },
+            { path: "/explore", name: "Explore" },
+            { path: "/about", name: "About" },
+            { path: "/contact", name: "Contact" },
+          ].map((item, i) => (
+            <Link
+              key={i}
+              href={item.path}
+              onClick={() => setMenuOpen(false)}
+              className={`block text-lg font-medium ${
+                isActive(item.path)
+                  ? "text-blue-600"
+                  : "text-gray-700 dark:text-gray-300"
+              }`}
+            >
+              {item.name}
+            </Link>
+          ))}
+          {!isLoggedIn && (
+            <Link
+              href="/login"
+              onClick={() => setMenuOpen(false)}
+              className="block w-full text-center bg-blue-600 text-white py-3 rounded-xl font-bold"
+            >
+              Login
+            </Link>
+          )}
         </div>
       )}
     </nav>
