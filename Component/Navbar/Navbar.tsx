@@ -342,47 +342,6 @@ const Navbar = () => {
             Explore
           </Link>
 
-          {/* Dropdown */}
-          <div className="relative group">
-            <button
-              className={`hover:text-blue-500 ${
-                pathname.startsWith("/flights") ||
-                pathname.startsWith("/hotels") ||
-                pathname.startsWith("/tours")
-                  ? "text-blue-600 font-semibold"
-                  : ""
-              }`}
-            >
-              Services ▾
-            </button>
-            <div className="absolute hidden group-hover:block bg-white dark:bg-gray-800 shadow-md mt-2 rounded-md w-40">
-              <Link
-                href="/flights"
-                className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                  isActive("/flights") ? "bg-gray-100 dark:bg-gray-700" : ""
-                }`}
-              >
-                Flights
-              </Link>
-              <Link
-                href="/hotels"
-                className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                  isActive("/hotels") ? "bg-gray-100 dark:bg-gray-700" : ""
-                }`}
-              >
-                Hotels
-              </Link>
-              <Link
-                href="/tours"
-                className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                  isActive("/tours") ? "bg-gray-100 dark:bg-gray-700" : ""
-                }`}
-              >
-                Tours
-              </Link>
-            </div>
-          </div>
-
           <Link
             href="/about"
             className={`hover:text-blue-500 ${
