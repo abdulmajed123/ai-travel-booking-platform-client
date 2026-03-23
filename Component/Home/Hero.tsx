@@ -34,7 +34,7 @@ const slides = [
   },
 ];
 
-export default function HeroSlider() {
+export default function Hero() {
   const [current, setCurrent] = useState(0);
 
   // অটো স্লাইড ৫ সেকেন্ড পর পর

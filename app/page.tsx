@@ -1,20 +1,45 @@
+"use client";
 import FAQ from "@/Component/Home/FAQ";
-import Feature from "@/Component/Home/Feature";
 import Hero from "@/Component/Home/Hero";
 import Review from "@/Component/Home/Review";
 import TravelService from "@/Component/Home/TravelService";
-import React from "react";
+import React, { useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import WhyChooseUs from "@/Component/Home/WhyChooseUs";
 
-const HomePage = () => {
+// মূল লজিকটি একটি আলাদা কম্পোনেন্টে রাখা ভালো যাতে Next.js এর searchParams এরর না দেয়
+function HomeContent() {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const token = searchParams.get("accessToken");
+
+    if (token) {
+      // ১. টোকেন সেভ করা
+      localStorage.setItem("accessToken", token);
+
+      // ২. সরাসরি window.location ব্যবহার করে হার্ড রিফ্রেশ দেওয়া
+      // এতে সব কম্পোনেন্ট (Navbar সহ) নতুন টোকেনটি পাবে
+      window.location.href = "/";
+    }
+  }, [searchParams]);
+
   return (
     <div>
-      <Hero></Hero>
-      <TravelService></TravelService>
-      <Feature></Feature>
-      <Review></Review>
-      <FAQ></FAQ>
+      <Hero />
+      <TravelService />
+      <WhyChooseUs></WhyChooseUs>
+      <Review />
+      <FAQ />
     </div>
   );
-};
+}
 
-export default HomePage;
+// এটিই আপনার মেইন পেজ যা default export হিসেবে থাকবে
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
+  );
+}
