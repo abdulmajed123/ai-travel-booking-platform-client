@@ -1,11 +1,12 @@
 "use client";
-import FAQ from "@/Component/Home/FAQ";
-import Hero from "@/Component/Home/Hero";
-import Review from "@/Component/Home/Review";
-import TravelService from "@/Component/Home/TravelService";
-import React, { useEffect, Suspense } from "react";
+
 import { useSearchParams } from "next/navigation";
+import Hero from "@/Component/Home/Hero";
+import TravelService from "@/Component/Home/TravelService";
 import WhyChooseUs from "@/Component/Home/WhyChooseUs";
+import Review from "@/Component/Home/Review";
+import FAQ from "@/Component/Home/FAQ";
+import { Suspense, useEffect } from "react";
 
 // মূল লজিকটি একটি আলাদা কম্পোনেন্টে রাখা ভালো যাতে Next.js এর searchParams এরর না দেয়
 function HomeContent() {
