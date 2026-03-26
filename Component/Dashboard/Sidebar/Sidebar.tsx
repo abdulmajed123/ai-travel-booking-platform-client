@@ -245,8 +245,8 @@ export default function Sidebar() {
                   <AiOutlineBook size={18} /> My Bookings
                 </Link>
                 <Link
-                  href="/dashboard/review"
-                  className={linkStyle("/dashboard/review")}
+                  href="/dashboard/myreview"
+                  className={linkStyle("/dashboard/myreview")}
                 >
                   <AiOutlineStar size={18} /> My Review
                 </Link>
