@@ -1,29 +1,8 @@
-// import DashboardNavbar from "@/Component/Dashboard/DashboardNavbar/DashboardNavbar";
-// import Sidebar from "@/Component/Dashboard/Sidebar/Sidebar";
+// app/(dashboard)/layout.tsx
+"use client";
 
 import DashboardNavbar from "@/Component/Dashboard/DashboardNavbar/DashboardNavbar";
 import Sidebar from "@/Component/Dashboard/Sidebar/Sidebar";
-
-// export default function DashboardLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <div className="flex min-h-screen">
-//       {/* Sidebar */}
-//       <div className="w-64 bg-gray-900 text-white p-5">
-//         <Sidebar></Sidebar>
-//       </div>
-
-//       {/* Main Content */}
-//       <div className="flex-1">
-//         <DashboardNavbar></DashboardNavbar>
-//         <div className="p-5">{children}</div>
-//       </div>
-//     </div>
-//   );
-// }
 
 export default function DashboardLayout({
   children,
@@ -31,23 +10,18 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-white">
-      {/* বাম পাশে সাইডবার */}
-      <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-[#020617] transition-colors duration-300">
+      {/* Sidebar - ডার্ক মোডে বর্ডার কালার আপডেট করা হয়েছে */}
+      <aside className="fixed inset-y-0 left-0 w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B0F1A] z-50">
         <Sidebar />
       </aside>
 
-      {/* ডান পাশে মেইন কন্টেন্ট */}
       <div className="flex-1 pl-64 flex flex-col">
-        {/* নাভবার */}
-        <header className="sticky top-0 z-40 w-full bg-white">
-          <DashboardNavbar />
-        </header>
+        {/* Navbar */}
+        <DashboardNavbar />
 
-        {/* মেইন ড্যাশবোর্ড কন্টেন্ট */}
-        <main className="flex-1 p-6 bg-gray-50/50 min-h-[calc(100-64px)]">
-          {children}
-        </main>
+        {/* ৩. Main Content - এখানে ব্যাকগ্রাউন্ড ট্রান্সপারেন্ট রাখা ভালো */}
+        <main className="p-4 md:p-10 flex-1">{children}</main>
       </div>
     </div>
   );

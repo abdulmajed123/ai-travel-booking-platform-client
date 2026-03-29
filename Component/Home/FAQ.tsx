@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
+import { RiArticleLine, RiQuestionLine } from "react-icons/ri";
 
 const faqs = [
   {
@@ -49,92 +50,152 @@ const blogs = [
   },
 ];
 
-export default function FAQ() {
+export default function FAQAndBlog() {
   const [openId, setOpenId] = useState<number | null>(1);
 
   return (
-    <section className="py-24 bg-gray-50 px-4">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-        {/* --- FAQ সেকশন (বাম পাশে) --- */}
-        <div>
-          <span className="text-indigo-600 font-bold uppercase tracking-widest text-sm">
-            Questions?
-          </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-3 mb-8">
-            Frequently Asked <span className="text-indigo-600">Questions</span>
-          </h2>
+    <section className="py-24 bg-gray-50 dark:bg-slate-950 px-4 transition-colors duration-300">
+      <div className="max-w-7xl mx-auto">
+        {/* --- ১. সেন্ট্রাল হেডলাইন (আপনার সব সেকশনের সাথে মিল রেখে) --- */}
+        <div className="text-center mb-20 space-y-4">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-[0.3em] text-xs"
+          >
+            Resources & Help
+          </motion.span>
 
-          <div className="space-y-4">
-            {faqs.map((faq) => (
-              <div
-                key={faq.id}
-                className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm"
-              >
-                <button
-                  onClick={() => setOpenId(openId === faq.id ? null : faq.id)}
-                  className="w-full flex justify-between items-center p-6 text-left hover:bg-gray-50 transition-colors"
-                >
-                  <span className="font-bold text-gray-800 text-lg">
-                    {faq.question}
-                  </span>
-                  {openId === faq.id ? (
-                    <AiOutlineMinus className="text-indigo-600" />
-                  ) : (
-                    <AiOutlinePlus className="text-gray-400" />
-                  )}
-                </button>
-                <AnimatePresence>
-                  {openId === faq.id && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="px-6 pb-6 text-gray-600 leading-relaxed"
-                    >
-                      {faq.answer}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </div>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white leading-tight"
+          >
+            Find The{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">
+              Right Answers
+            </span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="max-w-2xl mx-auto text-gray-500 dark:text-gray-400 text-lg"
+          >
+            Explore our frequently asked questions and latest travel stories to
+            make your next journey smooth and unforgettable.
+          </motion.p>
         </div>
 
-        {/* --- Blog সেকশন (ডান পাশে) --- */}
-        <div>
-          <span className="text-indigo-600 font-bold uppercase tracking-widest text-sm">
-            Our Blog
-          </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-3 mb-8">
-            Latest Travel <span className="text-indigo-600">Stories</span>
-          </h2>
+        {/* --- ২. মেইন কন্টেন্ট গ্রিড --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          {/* --- FAQ সেকশন (বাম পাশে) --- */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600">
+                <RiQuestionLine size={24} />
+              </div>
+              <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-wider">
+                FAQ Center
+              </h3>
+            </div>
 
-          <div className="space-y-6">
-            {blogs.map((blog) => (
-              <motion.div
-                key={blog.id}
-                whileHover={{ x: 10 }}
-                className="flex gap-5 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm cursor-pointer group"
-              >
-                <img
-                  src={blog.image}
-                  className="w-24 h-24 rounded-xl object-cover"
-                  alt="blog"
-                />
-                <div className="flex flex-col justify-center">
-                  <p className="text-xs font-semibold text-indigo-500 mb-1">
-                    {blog.date}
-                  </p>
-                  <h4 className="font-bold text-gray-900 text-lg group-hover:text-indigo-600 transition-colors">
-                    {blog.title}
-                  </h4>
-                  <p className="text-sm text-gray-400 mt-1 italic">
-                    Read Article →
-                  </p>
+            <div className="space-y-4">
+              {faqs.map((faq) => (
+                <div
+                  key={faq.id}
+                  className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <button
+                    onClick={() => setOpenId(openId === faq.id ? null : faq.id)}
+                    className="w-full flex justify-between items-center p-6 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <span className="font-bold text-gray-800 dark:text-gray-100 text-lg pr-4">
+                      {faq.question}
+                    </span>
+                    <div
+                      className={`p-2 rounded-full transition-transform duration-300 ${openId === faq.id ? "bg-indigo-600 text-white rotate-180" : "bg-gray-100 dark:bg-gray-800 text-gray-500"}`}
+                    >
+                      {openId === faq.id ? (
+                        <AiOutlineMinus />
+                      ) : (
+                        <AiOutlinePlus />
+                      )}
+                    </div>
+                  </button>
+                  <AnimatePresence>
+                    {openId === faq.id && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="px-6 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed text-base"
+                      >
+                        {faq.answer}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* --- Blog সেকশন (ডান পাশে) --- */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600">
+                <RiArticleLine size={24} />
+              </div>
+              <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-wider">
+                Latest Articles
+              </h3>
+            </div>
+
+            <div className="space-y-6">
+              {blogs.map((blog, idx) => (
+                <motion.div
+                  key={blog.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  whileHover={{ x: 10 }}
+                  className="flex flex-col sm:flex-row gap-5 bg-white dark:bg-gray-900 p-5 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm cursor-pointer group transition-all hover:shadow-xl hover:shadow-indigo-500/5"
+                >
+                  <div className="relative overflow-hidden rounded-2xl w-full sm:w-32 h-32">
+                    <img
+                      src={blog.image}
+                      className="w-full h-full object-cover dark:brightness-90 transition-transform duration-500 group-hover:scale-110"
+                      alt="blog"
+                    />
+                  </div>
+                  <div className="flex flex-col justify-center flex-1">
+                    <p className="text-[10px] font-bold text-indigo-500 dark:text-indigo-400 mb-2 uppercase tracking-[0.2em]">
+                      {blog.date}
+                    </p>
+                    <h4 className="font-black text-gray-900 dark:text-white text-xl group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug">
+                      {blog.title}
+                    </h4>
+                    <p className="text-sm font-bold text-gray-400 mt-3 group-hover:text-gray-900 dark:group-hover:text-gray-200 flex items-center gap-2">
+                      Read Article <span className="text-xl">→</span>
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

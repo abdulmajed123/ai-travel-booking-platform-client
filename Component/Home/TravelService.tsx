@@ -3,6 +3,8 @@
 // import ItemCard from "@/Component/Cards/ItemCard";
 // import ItemSkeletonCard from "@/Component/Skeleton/ItemSkeletonCard";
 // import { useEffect, useState } from "react";
+// import { motion } from "framer-motion";
+// import Link from "next/link";
 
 // type Tour = {
 //   _id: string;
@@ -18,10 +20,11 @@
 //   useEffect(() => {
 //     const fetchTours = async () => {
 //       try {
-//         const res = await fetch("http://localhost:5000/api/v1/items");
+//         const res = await fetch("https://ai-travel-booking-platform-server.onrender.com/api/v1/items");
 //         const result = await res.json();
 
-//         setData(result.data);
+//         // এখানে ডাটা স্লাইস করে মাত্র ৮টি নেওয়া হয়েছে
+//         setData(result.data.slice(0, 8));
 //       } catch (error) {
 //         console.error(error);
 //       } finally {
@@ -33,22 +36,60 @@
 //   }, []);
 
 //   return (
-//     <div className="p-6">
-//       {/* Heading / Text Above Grid */}
-//       <h1 className="text-3xl font-bold mb-6 text-center">Explore Our Tours</h1>
-//       <p className="text-center text-gray-600 mb-6">
-//         Discover amazing places and experiences for your next adventure.
-//       </p>
+//     <section className="py-16 px-4 bg-white dark:bg-black">
+//       <div className="max-w-7xl mx-auto">
+//         {/* --- হেডিং সেকশন --- */}
+//         <div className="text-center mb-12 space-y-4">
+//           <motion.span
+//             initial={{ opacity: 0 }}
+//             whileInView={{ opacity: 1 }}
+//             className="text-indigo-600 font-bold tracking-widest uppercase text-sm"
+//           >
+//             Exclusive Offers
+//           </motion.span>
 
-//       {/* Grid */}
-//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-//         {loading
-//           ? Array.from({ length: 8 }).map((_, i) => (
-//               <ItemSkeletonCard key={i} />
-//             ))
-//           : data.map((item) => <ItemCard key={item._id} item={item} />)}
+//           <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900">
+//             Our Most Popular <span className="text-indigo-600">Packages</span>
+//           </h2>
+
+//           <p className="max-w-2xl mx-auto text-gray-500 text-lg leading-relaxed">
+//             From serene beaches to majestic mountains, discover our handpicked
+//             destinations designed for your dream vacation.
+//           </p>
+//         </div>
+
+//         {/* --- গ্রিড লেআউট --- */}
+//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+//           {loading
+//             ? Array.from({ length: 8 }).map((_, i) => (
+//                 <ItemSkeletonCard key={i} />
+//               ))
+//             : data.map((item) => (
+//                 <motion.div
+//                   key={item._id}
+//                   initial={{ opacity: 0, scale: 0.9 }}
+//                   whileInView={{ opacity: 1, scale: 1 }}
+//                   transition={{ duration: 0.4 }}
+//                   viewport={{ once: true }}
+//                 >
+//                   <ItemCard item={item} />
+//                 </motion.div>
+//               ))}
+//         </div>
+
+//         {/* --- View All Button (অপশনাল কিন্তু ভালো দেখায়) --- */}
+//         {!loading && (
+//           <div className="mt-16 text-center">
+//             <Link
+//               href={"/explore"}
+//               className="px-10 py-4 bg-gray-900 text-white font-bold rounded-xl hover:bg-indigo-600 transition-colors shadow-lg hover:shadow-indigo-200"
+//             >
+//               View All Destinations
+//             </Link>
+//           </div>
+//         )}
 //       </div>
-//     </div>
+//     </section>
 //   );
 // }
 
@@ -74,10 +115,11 @@ export default function TravelService() {
   useEffect(() => {
     const fetchTours = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/v1/items");
+        const res = await fetch(
+          "https://ai-travel-booking-platform-server.onrender.com/api/v1/items",
+        );
         const result = await res.json();
-
-        // এখানে ডাটা স্লাইস করে মাত্র ৮টি নেওয়া হয়েছে
+        // ডাটা স্লাইস করে ৮টি নেওয়া
         setData(result.data.slice(0, 8));
       } catch (error) {
         console.error(error);
@@ -90,23 +132,28 @@ export default function TravelService() {
   }, []);
 
   return (
-    <section className="py-16 px-4 bg-white">
+    /* bg-white এবং dark:bg-slate-950 যোগ করা হয়েছে যাতে টগল কাজ করে */
+    <section className="py-16 px-4 bg-white dark:bg-slate-950 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* --- হেডিং সেকশন --- */}
         <div className="text-center mb-12 space-y-4">
           <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            className="text-indigo-600 font-bold tracking-widest uppercase text-sm"
+            className="text-indigo-600 dark:text-indigo-400 font-bold tracking-widest uppercase text-sm"
           >
             Exclusive Offers
           </motion.span>
 
-          <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900">
-            Our Most Popular <span className="text-indigo-600">Packages</span>
+          {/* টেক্সট কালার ডার্ক মোডে সাদা করার জন্য text-gray-900 dark:text-white */}
+          <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-white">
+            Our Most Popular{" "}
+            <span className="text-indigo-600 dark:text-indigo-400">
+              Packages
+            </span>
           </h2>
 
-          <p className="max-w-2xl mx-auto text-gray-500 text-lg leading-relaxed">
+          <p className="max-w-2xl mx-auto text-gray-500 dark:text-gray-400 text-lg leading-relaxed">
             From serene beaches to majestic mountains, discover our handpicked
             destinations designed for your dream vacation.
           </p>
@@ -131,12 +178,12 @@ export default function TravelService() {
               ))}
         </div>
 
-        {/* --- View All Button (অপশনাল কিন্তু ভালো দেখায়) --- */}
+        {/* --- View All Button --- */}
         {!loading && (
           <div className="mt-16 text-center">
             <Link
               href={"/explore"}
-              className="px-10 py-4 bg-gray-900 text-white font-bold rounded-xl hover:bg-indigo-600 transition-colors shadow-lg hover:shadow-indigo-200"
+              className="px-10 py-4 bg-gray-900 dark:bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-600 dark:hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none"
             >
               View All Destinations
             </Link>

@@ -1,183 +1,245 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useUserStore } from "@/store/userStore";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  AiOutlineCalendar,
-  AiOutlineCheckCircle,
-  AiOutlineClockCircle,
-  AiOutlineInfoCircle,
+  AiOutlineDelete,
   AiOutlineShopping,
+  AiOutlineInfoCircle,
 } from "react-icons/ai";
-import { motion } from "framer-motion";
 
-export default function MyBookingsPage() {
-  const [bookings, setBookings] = useState([]);
+export default function MyBookings() {
+  const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const user = useUserStore((state) => state.user);
+
+  const fetchBookings = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const res = await fetch(
+        "https://ai-travel-booking-platform-server.onrender.com/api/v1/bookings",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      const data = await res.json();
+      if (data.success) setBookings(data.data);
+    } catch (err) {
+      toast.error("Failed to load bookings");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const token = localStorage.getItem("accessToken");
-
-        if (!token) {
-          console.error("No token found in localStorage");
-          setLoading(false);
-          return;
-        }
-
-        // ব্যাকএন্ড কল - আপনার নতুন রাউট অনুযায়ী
-        const response = await fetch("http://localhost:5000/api/v1/bookings", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
-
-        // যদি রেসপন্স JSON না হয়ে HTML আসে (সেই এরর ফিক্স)
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          const text = await response.text();
-          console.error(
-            "Server sent non-JSON response. Check your backend routes.",
-            text,
-          );
-          setLoading(false);
-          return;
-        }
-
-        const result = await response.json();
-        console.log("Data", result);
-
-        if (result.success) {
-          setBookings(result.data || []);
-        }
-      } catch (error) {
-        console.error("Error fetching bookings:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchBookings();
   }, []);
 
-  if (loading)
+  const handleDelete = async (id: string) => {
+    Swal.fire({
+      title: "Cancel Booking?",
+      text: "Are you sure you want to remove this booking?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#f43f5e",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Yes, Cancel It!",
+      background: document.documentElement.classList.contains("dark")
+        ? "#0f172a"
+        : "#fff",
+      color: document.documentElement.classList.contains("dark")
+        ? "#fff"
+        : "#000",
+      customClass: {
+        popup: "rounded-[2rem] border border-gray-100 dark:border-gray-800",
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const token = localStorage.getItem("accessToken");
+        const res = await fetch(
+          `https://ai-travel-booking-platform-server.onrender.com/api/v1/bookings/${id}`,
+          {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        if (res.ok) {
+          Swal.fire({
+            title: "Canceled!",
+            text: "Your booking has been deleted.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+            background: document.documentElement.classList.contains("dark")
+              ? "#0f172a"
+              : "#fff",
+            color: document.documentElement.classList.contains("dark")
+              ? "#fff"
+              : "#000",
+            customClass: { popup: "rounded-[2rem]" },
+          });
+          setBookings(bookings.filter((b) => b._id !== id));
+        }
+      }
+    });
+  };
+
+  if (loading) {
     return (
-      <div className="flex h-96 items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <span className="loading loading-infinity loading-lg text-blue-600"></span>
+        <p className="text-gray-400 font-bold animate-pulse text-xs uppercase tracking-widest">
+          Fetching your plans...
+        </p>
       </div>
     );
+  }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 p-2">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto min-h-screen transition-colors duration-300">
       {/* Header Section */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
         <div>
-          <h1 className="text-2xl font-black text-gray-800 tracking-tight">
-            My Bookings
-          </h1>
-          <p className="text-sm text-gray-500 font-medium">
-            Review and manage your travel history.
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tighter">
+            My <span className="text-blue-600">Bookings</span>
+          </h2>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium">
+            Manage your active reservations.
           </p>
         </div>
-        <div className="bg-blue-600 px-4 py-2 rounded-2xl shadow-sm shadow-blue-200">
-          <p className="text-xs font-bold text-white uppercase tracking-wider">
-            Total Items: {bookings.length}
-          </p>
+        <div className="bg-blue-50 dark:bg-blue-900/20 px-6 py-4 rounded-3xl border border-blue-100 dark:border-blue-800/50 flex items-center gap-4">
+          <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-lg shadow-blue-200 dark:shadow-none">
+            <AiOutlineShopping size={24} />
+          </div>
+          <div>
+            <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">
+              Total
+            </p>
+            <p className="text-2xl font-black text-blue-700 dark:text-blue-400 leading-none">
+              {bookings.length}
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      {bookings.length === 0 ? (
-        <div className="bg-white rounded-[2.5rem] border border-dashed border-gray-200 p-24 text-center">
-          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-300">
-            <AiOutlineShopping size={40} />
-          </div>
-          <h3 className="text-xl font-bold text-gray-700">
-            No active bookings
-          </h3>
-          <p className="text-gray-400 text-sm mt-2">
-            Time to plan your next adventure!
-          </p>
+      {/* Table Section */}
+      <div className="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden transition-all">
+        <div className="overflow-x-auto">
+          <table className="table w-full border-separate border-spacing-y-3 px-6 pb-6">
+            <thead>
+              <tr className="text-gray-400 dark:text-gray-500 text-[11px] font-black uppercase tracking-widest border-none">
+                <th className="bg-transparent pl-4 py-6">Item Details</th>
+                <th className="bg-transparent text-center">Quantity</th>
+                <th className="bg-transparent text-center">Pricing</th>
+                <th className="bg-transparent text-center">Status</th>
+                <th className="bg-transparent text-right pr-4">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <AnimatePresence mode="popLayout">
+                {bookings.length > 0 ? (
+                  bookings.map((booking) => (
+                    <motion.tr
+                      layout
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      key={booking._id}
+                      className="group bg-gray-50/50 dark:bg-gray-800/30 hover:bg-white dark:hover:bg-gray-800 transition-all shadow-sm rounded-2xl"
+                    >
+                      {/* Item Info with IMAGE */}
+                      <td className="rounded-l-[1.5rem] py-4 pl-4 border-none">
+                        <div className="flex items-center gap-4">
+                          <div className="relative w-16 h-16 rounded-2xl overflow-hidden shadow-md border border-white dark:border-gray-700 bg-gray-200 dark:bg-gray-700">
+                            {booking.itemId?.image ? (
+                              <img
+                                src={booking.itemId.image}
+                                alt={booking.itemId?.title}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-blue-500 font-bold text-xs uppercase text-center p-1">
+                                No Img
+                              </div>
+                            )}
+                          </div>
+
+                          <div>
+                            <div className="font-black text-gray-800 dark:text-gray-100 text-base">
+                              {booking.itemId?.title || "Product Name"}
+                            </div>
+                            <div className="text-[10px] text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1 font-bold italic uppercase tracking-wider">
+                              <AiOutlineInfoCircle /> ID:{" "}
+                              {booking._id.slice(-8)}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Quantity */}
+                      <td className="text-center font-bold text-gray-600 dark:text-gray-300 border-none">
+                        {booking.quantity}
+                      </td>
+
+                      {/* Price */}
+                      <td className="text-center border-none">
+                        <div className="text-lg font-black text-blue-600 dark:text-blue-400">
+                          ${booking.price}
+                        </div>
+                      </td>
+
+                      {/* Status */}
+                      <td className="text-center border-none">
+                        <div
+                          className={`badge py-4 px-5 font-black text-[10px] tracking-widest border-none gap-2 ${
+                            booking.status === "pending"
+                              ? "bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-500"
+                              : "bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-500"
+                          }`}
+                        >
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              booking.status === "pending"
+                                ? "bg-amber-500"
+                                : "bg-emerald-500"
+                            } animate-pulse`}
+                          ></span>
+                          {booking.status.toUpperCase()}
+                        </div>
+                      </td>
+
+                      {/* Action */}
+                      <td className="rounded-r-[1.5rem] text-right pr-4 border-none">
+                        <button
+                          onClick={() => handleDelete(booking._id)}
+                          className="btn btn-ghost btn-circle text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition-colors"
+                        >
+                          <AiOutlineDelete size={22} />
+                        </button>
+                      </td>
+                    </motion.tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="py-24 text-center border-none">
+                      <div className="flex flex-col items-center opacity-20 dark:opacity-10">
+                        <AiOutlineShopping
+                          size={80}
+                          className="dark:text-white"
+                        />
+                        <p className="mt-4 font-black text-2xl uppercase dark:text-white">
+                          No Bookings Found
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </AnimatePresence>
+            </tbody>
+          </table>
         </div>
-      ) : (
-        <div className="grid gap-5">
-          {bookings.map((booking: any, index: number) => (
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              key={booking._id}
-              className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between group"
-            >
-              <div className="flex items-center gap-5">
-                {/* Icon Box */}
-                <div className="w-16 h-16 bg-blue-50 rounded-[1.2rem] flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                  <AiOutlineCalendar size={30} />
-                </div>
-
-                <div>
-                  {/* itemId.name অথবা itemId.title (আপনার মডল অনুযায়ী) */}
-                  <h3 className="text-lg font-extrabold text-gray-800">
-                    {booking.itemId?.name ||
-                      booking.itemId?.title ||
-                      "Exclusive Trip Package"}
-                  </h3>
-                  <div className="flex items-center gap-3 mt-1.5">
-                    <span className="flex items-center gap-1 text-[11px] font-bold text-gray-400 uppercase tracking-tighter">
-                      <AiOutlineClockCircle />
-                      {new Date(booking.createdAt).toLocaleDateString("en-GB", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
-                    <span className="h-1 w-1 bg-gray-200 rounded-full"></span>
-                    <span className="text-[11px] font-bold text-blue-600/70">
-                      REF: #{booking._id.slice(-6).toUpperCase()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between md:justify-end gap-8 mt-6 md:mt-0 pt-5 md:pt-0 border-t md:border-none border-gray-50">
-                <div className="text-right">
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                    Price Paid
-                  </p>
-                  <p className="text-2xl font-black text-gray-900 leading-none mt-1">
-                    ${booking.price}
-                  </p>
-                </div>
-
-                <div className="flex flex-col items-end gap-2">
-                  <span
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                      booking.status === "approved"
-                        ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                        : "bg-amber-50 text-amber-600 border-amber-100"
-                    }`}
-                  >
-                    {booking.status === "approved" ? (
-                      <AiOutlineCheckCircle size={14} />
-                    ) : (
-                      <AiOutlineClockCircle size={14} />
-                    )}
-                    {booking.status}
-                  </span>
-                  <button className="text-[11px] font-bold text-blue-600 hover:text-blue-800 transition-colors px-1">
-                    Details
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -1,32 +1,33 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
-export type Role = "USER" | "ADMIN" | "MANAGER";
-
-export interface IUser {
+interface User {
+  id: string;
   name: string;
   email: string;
-  role: Role;
+  role: string;
+  avatar?: string;
 }
 
-interface UserState {
-  user: IUser | null;
-  setUser: (user: IUser | null) => void; // null এলাউ করলাম ক্লিয়ার করার জন্য
+interface AuthState {
+  user: User | null;
+  setUser: (user: User | null) => void;
   logout: () => void;
 }
 
-export const useUserStore = create<UserState>()(
+export const useUserStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
       setUser: (user) => set({ user }),
       logout: () => {
         set({ user: null });
-        localStorage.removeItem("user-storage");
+        localStorage.removeItem("accessToken");
       },
     }),
     {
-      name: "user-storage", // নিশ্চিত করুন এই নামটাই সব জায়গায় আছে
+      name: "user-storage", // localstorage এ এই নামে ডাটা থাকবে
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 );

@@ -7,8 +7,9 @@ import WhyChooseUs from "@/Component/Home/WhyChooseUs";
 import Review from "@/Component/Home/Review";
 import FAQ from "@/Component/Home/FAQ";
 import { Suspense, useEffect } from "react";
+import AIPlannerPreview from "@/Component/Home/AIPlannerPreview";
+import Newsletter from "@/Component/Home/NewsLetter";
 
-// মূল লজিকটি একটি আলাদা কম্পোনেন্টে রাখা ভালো যাতে Next.js এর searchParams এরর না দেয়
 function HomeContent() {
   const searchParams = useSearchParams();
 
@@ -16,11 +17,8 @@ function HomeContent() {
     const token = searchParams.get("accessToken");
 
     if (token) {
-      // ১. টোকেন সেভ করা
       localStorage.setItem("accessToken", token);
 
-      // ২. সরাসরি window.location ব্যবহার করে হার্ড রিফ্রেশ দেওয়া
-      // এতে সব কম্পোনেন্ট (Navbar সহ) নতুন টোকেনটি পাবে
       window.location.href = "/";
     }
   }, [searchParams]);
@@ -29,9 +27,11 @@ function HomeContent() {
     <div>
       <Hero />
       <TravelService />
+      <AIPlannerPreview></AIPlannerPreview>
       <WhyChooseUs></WhyChooseUs>
       <Review />
       <FAQ />
+      <Newsletter></Newsletter>
     </div>
   );
 }

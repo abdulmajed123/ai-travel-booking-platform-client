@@ -1,7 +1,7 @@
 "use client";
 
+import { getToken } from "next-auth/jwt";
 import { useEffect, useState } from "react";
-import { getToken } from "../utils/auth";
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(true);

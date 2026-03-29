@@ -1,189 +1,123 @@
-// "use client";
-
-// import Link from "next/link";
-// import { useState } from "react";
-// import { useAuth } from "@/hooks/useAuth";
-// import AuthButton from "@/Component/Button/AuthButton";
-
-// const DashboardNavbar = () => {
-//   const [profileOpen, setProfileOpen] = useState(false);
-//   const { isLoggedIn, loading } = useAuth();
-
-//   return (
-//     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-800 shadow-sm">
-//       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-//         {/* ✈️ Logo */}
-//         <Link href="/" className="flex items-center gap-2 group">
-//           <span className="text-2xl transition-transform group-hover:rotate-12">
-//             ✈️
-//           </span>
-//           <span className="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-//             TravelAI
-//           </span>
-//         </Link>
-
-//         {/* Right Side */}
-//         <div className="flex items-center gap-4">
-//           {!loading && (
-//             <>
-//               {isLoggedIn ? (
-//                 /* 👤 Profile Dropdown */
-//                 <div className="relative">
-//                   <button
-//                     onClick={() => setProfileOpen(!profileOpen)}
-//                     className="w-10 h-10 rounded-full border-2 border-blue-100 dark:border-gray-700 bg-gradient-to-tr from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold shadow-md hover:scale-105 transition-all"
-//                   >
-//                     U
-//                   </button>
-
-//                   {/* Dropdown */}
-//                   {profileOpen && (
-//                     <div className="absolute right-0 mt-3 w-52 bg-white dark:bg-gray-800 shadow-xl rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-//                       {/* Info */}
-//                       <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
-//                         <p className="text-[10px] uppercase text-gray-400 font-bold">
-//                           Account
-//                         </p>
-//                         <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
-//                           Traveler User
-//                         </p>
-//                       </div>
-
-//                       {/* Menu */}
-//                       <div className="py-1">
-//                         <Link
-//                           href="/dashboard"
-//                           onClick={() => setProfileOpen(false)}
-//                           className="block px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-//                         >
-//                           Dashboard
-//                         </Link>
-
-//                         <Link
-//                           href="/profile"
-//                           onClick={() => setProfileOpen(false)}
-//                           className="block px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-//                         >
-//                           My Profile
-//                         </Link>
-//                       </div>
-
-//                       {/* Auth Action */}
-//                       <div className="border-t border-gray-100 dark:border-gray-700 bg-gray-50/30">
-//                         <AuthButton />
-//                       </div>
-//                     </div>
-//                   )}
-//                 </div>
-//               ) : (
-//                 /* Login */
-//                 <Link
-//                   href="/login"
-//                   className="px-6 py-2 rounded-full bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition"
-//                 >
-//                   Login
-//                 </Link>
-//               )}
-//             </>
-//           )}
-//         </div>
-//       </div>
-//     </nav>
-//   );
-// };
-
-// export default DashboardNavbar;
-
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import { useUserStore } from "@/store/userStore";
 import AuthButton from "@/Component/Button/AuthButton";
+import {
+  AiOutlineUser,
+  AiOutlineSetting,
+  AiOutlineLogout,
+} from "react-icons/ai";
+import { ThemeToggle } from "@/Component/Shared/ThemeToggle";
+import NavbarLogo from "@/app/(main)/NavbarLogo/NavbarLogo";
 
 const DashboardNavbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
-  const { user } = useUserStore(); // সরাসরি স্টোর থেকে ইউজার ডাটা
+  const user = useUserStore((state) => state.user);
   const [mounted, setMounted] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Hydration error handle করার জন্য
   useEffect(() => {
     setMounted(true);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (!mounted) return null;
+  // Hydration Fix: লোডিং অবস্থায় একটি কঙ্কাল নেভবার দেখাবে
+  if (!mounted)
+    return (
+      <nav className="h-20 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 transition-colors"></nav>
+    );
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-800 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* ✈️ Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <span className="text-2xl transition-transform group-hover:rotate-12">
-            ✈️
-          </span>
-          <span className="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            TravelAI
-          </span>
-        </Link>
+    <nav className="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        {/*  Logo - Left Side */}
 
-        {/* Right Side */}
-        <div className="flex items-center gap-4">
+        <NavbarLogo></NavbarLogo>
+
+        {/* Right Side: Theme Toggle + Profile Section */}
+        <div className="flex items-center gap-3 md:gap-5">
+          {/* --- Theme Toggle Button --- */}
+          <div className="flex items-center">
+            <ThemeToggle />
+          </div>
+
           {user ? (
-            /* 👤 Profile Dropdown */
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
+              {/* Profile Trigger */}
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="w-10 h-10 rounded-full border-2 border-blue-100 dark:border-gray-700 bg-gradient-to-tr from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold shadow-md hover:scale-105 transition-all uppercase"
+                className="flex items-center gap-2 p-1 pr-3 rounded-full bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:shadow-md dark:hover:bg-gray-800 transition-all active:scale-95"
               >
-                {user.name ? user.name.charAt(0) : "U"}
+                <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-sm border-2 border-white dark:border-gray-800 shadow-sm">
+                  {user.name?.charAt(0).toUpperCase() || "U"}
+                </div>
+                <span className="text-xs font-bold text-gray-700 dark:text-gray-200 hidden sm:block">
+                  {user.name?.split(" ")[0]}
+                </span>
               </button>
 
-              {/* Dropdown Menu */}
+              {/* Modern Dropdown */}
               {profileOpen && (
-                <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 animate-in fade-in zoom-in duration-150">
-                  {/* User Info Section */}
-                  <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
-                    <p className="text-[10px] uppercase text-gray-400 font-black tracking-widest">
-                      {user.role} Account
-                    </p>
-                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
+                <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-900 shadow-2xl rounded-[1.5rem] overflow-hidden border border-gray-100 dark:border-gray-800 animate-in fade-in zoom-in duration-200 origin-top-right">
+                  {/* User Info Header */}
+                  <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
+                    <p className="text-sm font-bold text-gray-800 dark:text-white truncate">
                       {user.name}
                     </p>
-                    <p className="text-[11px] text-gray-500 truncate">
-                      {user.email}
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">
+                      {user.role || "User"}
                     </p>
                   </div>
 
                   {/* Menu Items */}
-                  <div className="py-1">
-                    <Link
-                      href="/dashboard"
-                      onClick={() => setProfileOpen(false)}
-                      className="block px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                    >
-                      Dashboard
-                    </Link>
+                  <div className="p-2 space-y-1">
                     <Link
                       href="/dashboard/profile"
                       onClick={() => setProfileOpen(false)}
-                      className="block px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all"
                     >
-                      My Profile
+                      <AiOutlineUser size={18} className="opacity-70" />
+                      Profile
                     </Link>
-                  </div>
 
-                  {/* Auth Action */}
-                  <div className="border-t border-gray-100 dark:border-gray-700 bg-gray-50/30">
-                    <AuthButton />
+                    <Link
+                      href="/dashboard/settings"
+                      onClick={() => setProfileOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all"
+                    >
+                      <AiOutlineSetting size={18} className="opacity-70" />
+                      Settings
+                    </Link>
+
+                    {/* Logout Button */}
+                    <div className="pt-1 border-t border-gray-100 dark:border-gray-800 mt-1">
+                      <div className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-xl transition-all cursor-pointer group">
+                        <AiOutlineLogout
+                          size={18}
+                          className="group-hover:-translate-x-1 transition-transform"
+                        />
+                        <AuthButton />
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            /* Login Button */
             <Link
               href="/login"
-              className="px-6 py-2 rounded-full bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition shadow-md shadow-blue-200"
+              className="px-6 py-2 rounded-xl bg-blue-600 text-white text-xs font-black uppercase tracking-widest hover:bg-blue-700 shadow-lg shadow-blue-100 dark:shadow-none transition-all active:scale-95"
             >
               Login
             </Link>
