@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Edit, Trash2, Plus, Search, Loader2, X } from "lucide-react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 interface IItem {
   _id: string;
