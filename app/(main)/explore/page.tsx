@@ -96,10 +96,11 @@ export default function ExplorePage() {
           }}
         >
           <option value="">📂 Category</option>
-          <option value="travel">Travel</option>
-          <option value="adventure">Adventure</option>
-          <option value="food">Food</option>
-          <option value="hotel">Hotel</option>
+          <option value="Beach">Beach</option>
+          <option value="Adventure">Adventure</option>
+          <option value="Wildlife">Wildlife</option>
+          <option value="Nature">Nature</option>
+          <option value="City">City</option>
         </select>
 
         {/* Price Range Select */}
@@ -109,15 +110,15 @@ export default function ExplorePage() {
             setPage(1);
             const value = e.target.value;
 
-            if (value === "low") {
+            if (value === "budget") {
               setPriceMin("0");
-              setPriceMax("100");
-            } else if (value === "medium") {
-              setPriceMin("100");
-              setPriceMax("500");
-            } else if (value === "high") {
-              setPriceMin("500");
-              setPriceMax("5000");
+              setPriceMax("5000"); // যেমন: ঢাকা সিটি ট্যুর (২,৫০০)
+            } else if (value === "mid") {
+              setPriceMin("5001");
+              setPriceMax("10000"); // যেমন: সাজেক (৮,০০০), বান্দরবান (৯,০০০)
+            } else if (value === "luxury") {
+              setPriceMin("10001");
+              setPriceMax("50000"); // যেমন: কক্সবাজার (১২,০০০), সেন্ট মার্টিন (১৪,০০০)
             } else {
               setPriceMin("");
               setPriceMax("");
@@ -125,9 +126,9 @@ export default function ExplorePage() {
           }}
         >
           <option value="">💰 Price Range</option>
-          <option value="low">0 - 100</option>
-          <option value="medium">100 - 500</option>
-          <option value="high">500+</option>
+          <option value="budget">Budget (Under 5k)</option>
+          <option value="mid">Mid-Range (5k - 10k)</option>
+          <option value="luxury">Luxury (10k+)</option>
         </select>
 
         {/* Sort Select */}

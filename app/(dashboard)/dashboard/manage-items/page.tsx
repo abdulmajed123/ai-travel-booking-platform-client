@@ -1,10 +1,21 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Edit, Trash2, Plus, Search, Loader2, X } from "lucide-react";
+import {
+  Edit,
+  Trash2,
+  Plus,
+  Search,
+  Loader2,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+} from "lucide-react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 interface IItem {
   _id: string;
@@ -17,7 +28,14 @@ interface IItem {
 const ManageItemsPage = () => {
   const [items, setItems] = useState<IItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Filtering & Pagination States
   const [searchTerm, setSearchTerm] = useState("");
+  const [category, setCategory] = useState("");
+  const [sort, setSort] = useState(""); // price_asc, price_desc
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 8; // প্রতি পেজে কয়টি আইটেম দেখাবে
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<IItem | null>(null);
@@ -26,11 +44,19 @@ const ManageItemsPage = () => {
   const fetchItems = async () => {
     try {
       setLoading(true);
+      // API call - limit ও page পাঠানো হচ্ছে
       const response = await axios.get(
-        `https://ai-travel-booking-platform-server.onrender.com/api/v1/items?search=${searchTerm}`,
+        `https://ai-travel-booking-platform-server.onrender.com/api/v1/items?search=${searchTerm}&category=${category}&sort=${sort}&page=${page}&limit=${limit}`,
       );
+
       if (response.data.success) {
         setItems(response.data.data);
+
+        // আপনার ব্যাকএন্ড 'meta' অবজেক্ট পাঠাচ্ছে, তাই এখান থেকে হিসাব করতে হবে
+        const totalData = response.data.meta.total;
+        const totalPageCount = Math.ceil(totalData / limit); // মোট ডাটাকে লিমিট দিয়ে ভাগ
+
+        setTotalPages(totalPageCount || 1);
       }
     } catch (error) {
       console.error("Error fetching items:", error);
@@ -38,11 +64,20 @@ const ManageItemsPage = () => {
       setLoading(false);
     }
   };
-
+  // Search Debouncing & Dependency effect
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => fetchItems(), 500);
+    const delayDebounceFn = setTimeout(() => {
+      fetchItems();
+    }, 500);
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm]);
+  }, [searchTerm, category, sort, page]);
+
+  // Filter বা Search চেঞ্জ হলে পেজ ১ এ নিয়ে আসা
+  const handleFilterChange = (type: string, value: string) => {
+    if (type === "category") setCategory(value);
+    if (type === "sort") setSort(value);
+    setPage(1);
+  };
 
   const handleDelete = async (id: string) => {
     Swal.fire({
@@ -118,19 +153,27 @@ const ManageItemsPage = () => {
   return (
     <div className="p-4 md:p-8 bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors duration-300">
       <div className="max-w-6xl mx-auto bg-white dark:bg-slate-900 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
-        {/* Header */}
-        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div>
-            <h1 className="text-2xl font-black text-slate-800 dark:text-white">
-              Manage <span className="text-blue-600">Items</span>
-            </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-              Total {items.length} products found
-            </p>
+        {/* Header & Filters */}
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 space-y-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-black text-slate-800 dark:text-white">
+                Manage <span className="text-blue-600">Items</span>
+              </h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                Total {items.length} products on this page
+              </p>
+            </div>
+            <Link href={"/dashboard/addItem"}>
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 font-bold transition-all shadow-lg shadow-blue-500/20">
+                <Plus size={18} /> Add New
+              </button>
+            </Link>
           </div>
 
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <div className="relative flex-1">
+          {/* Search, Category, Sort Controls */}
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <div className="relative flex-1 min-w-[200px]">
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                 size={18}
@@ -138,19 +181,40 @@ const ManageItemsPage = () => {
               <input
                 type="text"
                 placeholder="Search products..."
-                className="pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-xl w-full outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
-                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl w-full outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setPage(1);
+                }}
               />
             </div>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 font-bold transition-all shrink-0">
-              <Plus size={18} />{" "}
-              <span className="hidden sm:inline">Add New</span>
-            </button>
+
+            <div className="flex items-center gap-2">
+              <select
+                onChange={(e) => handleFilterChange("category", e.target.value)}
+                className="bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 dark:text-white font-semibold text-sm cursor-pointer"
+              >
+                <option value="">All Categories</option>
+                <option value="Beach">Beach</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Nature">Nature</option>
+                <option value="City">City</option>
+              </select>
+
+              <select
+                onChange={(e) => handleFilterChange("sort", e.target.value)}
+                className="bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 dark:text-white font-semibold text-sm cursor-pointer"
+              >
+                <option value="">Default Sort</option>
+                <option value="price">Price: Low to High</option>
+                <option value="-price">Price: High to Low</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto">
+        {/* Table Content */}
+        <div className="overflow-x-auto min-h-[400px]">
           <table className="w-full text-left">
             <thead className="bg-slate-50/50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 uppercase text-[11px] font-black tracking-widest">
               <tr>
@@ -170,7 +234,7 @@ const ManageItemsPage = () => {
                     />
                   </td>
                 </tr>
-              ) : (
+              ) : items.length > 0 ? (
                 items.map((item) => (
                   <tr
                     key={item._id}
@@ -218,13 +282,47 @@ const ManageItemsPage = () => {
                     </td>
                   </tr>
                 ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="p-20 text-center text-slate-400 font-bold italic"
+                  >
+                    No items found matching your criteria.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
+
+        {/* Modern Pagination Footer */}
+        <div className="p-6 bg-slate-50/30 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+          <button
+            disabled={page === 1 || loading}
+            onClick={() => setPage((prev) => prev - 1)}
+            className="flex items-center gap-1 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm disabled:opacity-50 hover:bg-slate-50 transition-all dark:text-white"
+          >
+            <ChevronLeft size={18} /> Previous
+          </button>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold text-slate-500 dark:text-slate-400">
+              Page <span className="text-blue-600">{page}</span> of {totalPages}
+            </span>
+          </div>
+
+          <button
+            disabled={page >= totalPages || loading}
+            onClick={() => setPage((prev) => prev + 1)}
+            className="flex items-center gap-1 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm disabled:opacity-50 hover:bg-slate-50 transition-all dark:text-white"
+          >
+            Next <ChevronRight size={18} />
+          </button>
+        </div>
       </div>
 
-      {/* Edit Modal */}
+      {/* Edit Modal (আগের মতোই রাখা হয়েছে) */}
       {isEditModalOpen && selectedItem && (
         <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">

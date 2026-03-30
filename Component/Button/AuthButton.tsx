@@ -51,23 +51,74 @@
 
 // export default AuthButton;
 
+// "use client";
+
+// import { useAuth } from "@/hooks/useAuth";
+// import { removeAuth } from "@/utils/auth"; // অথবা logout
+// import Link from "next/link";
+// import { toast } from "react-hot-toast";
+
+// const AuthButton = () => {
+//   const { isLoggedIn } = useAuth();
+
+//   const handleLogout = () => {
+//     removeAuth(); // টোকেন ডিলিট করবে
+//     toast.success("Logged out successfully");
+//     window.location.href = "/login"; // পেজ রিফ্রেশসহ রিডাইরেক্ট
+//   };
+
+//   if (isLoggedIn) {
+//     return (
+//       <button
+//         onClick={handleLogout}
+//         className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full font-bold transition-all"
+//       >
+//         Logout
+//       </button>
+//     );
+//   }
+
+//   return (
+//     <Link
+//       href="/login"
+//       className="block text-center bg-blue-600 text-white py-2 px-6 rounded-lg font-bold"
+//     >
+//       Login
+//     </Link>
+//   );
+// };
+
+// export default AuthButton;
+
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
-import { removeAuth } from "@/utils/auth"; // অথবা logout
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
+import { useUserStore } from "@/store/userStore"; // আপনার স্টোর ইমপোর্ট করুন
+import { removeAuth } from "@/utils/auth";
 
 const AuthButton = () => {
-  const { isLoggedIn } = useAuth();
+  const { user, setUser } = useUserStore(); // সরাসরি স্টোর থেকে ইউজার নিন
+  const [mounted, setMounted] = useState(false);
+
+  // Hydration Error এড়াতে এবং মাউন্ট চেক করতে
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
-    removeAuth(); // টোকেন ডিলিট করবে
+    removeAuth(); // টোকেন রিমুভ
+    setUser(null); // স্টোর থেকে ইউজার ডাটা ক্লিয়ার করুন
     toast.success("Logged out successfully");
-    window.location.href = "/login"; // পেজ রিফ্রেশসহ রিডাইরেক্ট
+    window.location.href = "/login";
   };
 
-  if (isLoggedIn) {
+  // মাউন্ট হওয়ার আগে কিছু রেন্ডার করবেন না (Hydration Fix)
+  if (!mounted) return null;
+
+  // ইউজার অবজেক্ট থাকলে লগআউট বাটন দেখাবে
+  if (user) {
     return (
       <button
         onClick={handleLogout}
@@ -78,6 +129,7 @@ const AuthButton = () => {
     );
   }
 
+  // ইউজার না থাকলে লগইন বাটন
   return (
     <Link
       href="/login"
