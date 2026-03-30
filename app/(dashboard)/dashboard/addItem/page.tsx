@@ -123,14 +123,21 @@ const AddItemForm = () => {
   };
 
   // Gallery ইমেজ প্রিভিউ করার জন্য
-  const getGalleryPreviews = () => {
+  // const getGalleryPreviews = () => {
+  //   if (!galleryLinks) return [];
+  //   return galleryLinks
+  //     .split(",")
+  //     .map((link) => link.trim())
+  //     .filter((link) => link.startsWith("http"));
+  // };
+
+  const getGalleryPreviews = (): string[] => {
     if (!galleryLinks) return [];
     return galleryLinks
       .split(",")
-      .map((link) => link.trim())
-      .filter((link) => link.startsWith("http"));
+      .map((link: string) => link.trim()) // এখানে : string যোগ করা হয়েছে
+      .filter((link: string) => link.startsWith("http"));
   };
-
   // সাধারণ Input এবং Label ক্লাস (Tailwind)
   const labelClass =
     "block text-sm font-bold text-gray-700 dark:text-gray-300 ml-1 mb-1";
